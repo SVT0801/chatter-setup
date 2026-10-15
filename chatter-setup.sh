@@ -1098,7 +1098,7 @@ check_system() {
   [[ -f /var/run/reboot-required ]] && warn os.reboot "нужна перезагрузка" "sudo reboot (портал поднимется сам)" || pass os.reboot "не нужна"
   local up; up="$(apt-get -s -o Debug::NoLocking=1 upgrade 2>/dev/null | grep -c '^Inst' || true)"
   [[ "$up" == 0 ]] && pass os.updates "обновлений нет" || warn os.updates "$up пакетов ждут обновления" "sudo apt-get update && sudo apt-get upgrade -y"
-  # WARN, not FAIL (Gate 5a C12): an update published during the install is not an install error.
+  # WARN, not FAIL: an update published during the install is not an install error.
   local sec; sec="$(apt-get -s -o Debug::NoLocking=1 upgrade 2>/dev/null | grep '^Inst' | grep -ci security || true)"
   [[ "$sec" == 0 ]] && pass os.security "нет ожидающих обновлений безопасности" \
     || warn os.security "$sec обновлений безопасности ждут установки — автообновление поставит их ночью" "или сейчас: sudo apt-get upgrade -y"
@@ -1166,7 +1166,7 @@ http_local() { # name domain path expected fix
 }
 
 # The portal the way a visitor's browser gets it: public domain (through
-# Cloudflare, if it proxies), no -k, up to 5 redirects (Gate 5a C1).
+# Cloudflare, if it proxies), no -k, up to 5 redirects.
 check_public() {
   local domain="$1" code rc=0 err msg
   err="$(mktemp)"
